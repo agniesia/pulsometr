@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Media.MediaProperties;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -253,17 +254,14 @@ namespace pulsometr
                     await m_mediaCaptureMgr.CapturePhotoToStreamAsync(imageProperties, mediaStream);
 
                     lista.Add(mediaStream);
-                    await mediaStream.FlushAsync();
+                   
                 }
                 Pulse pulse = new Pulse();
                 pulse.ApllyforAllImages(lista, ref RedMeanList);
 
                 //pulse.ApllyforAllImages(lista);
                 ShowStatusMessage("convert");
-                StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
-
-                StorageFile sampleFile = await storageFolder.GetFileAsync("sample.txt");
-               
+                
 
 
             }
@@ -274,7 +272,25 @@ namespace pulsometr
                 btnTakePhoto.IsEnabled = true;
             }
         }
-        
+
+        private string stringList()
+        {
+            string text="";
+            foreach (double liczba in RedMeanList)
+            {
+                text +=((int)liczba).ToString();
+                text += ",";
+            }
+            text += "    " + RedMeanList.Count;
+            return text;
+        }
+        private async void save_Click(object sender, RoutedEventArgs e)
+        {
+            StorageFolder storageFolder = KnownFolders.MusicLibrary;
+
+            StorageFile sampleFile = await storageFolder.CreateFileAsync("sample5.txt");
+            await Windows.Storage.FileIO.WriteTextAsync(sampleFile,stringList());
+        }
         //static public string SerializeListToXml(List<double> List)
         //{
         //    try

@@ -24,7 +24,10 @@
     <Capability Name="internetClient" />
     <Capability Name="videosLibrary" />
     <Capability Name="picturesLibrary" />
+    <Capability Name="musicLibrary" />
+    <Capability Name="removableStorage" />
     <DeviceCapability Name="webcam" />
     <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="location" />
   </Capabilities>
 </Package>
