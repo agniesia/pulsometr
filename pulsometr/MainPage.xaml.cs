@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
@@ -32,16 +33,29 @@ namespace pulsometr
         public MainPage()
         {
             this.InitializeComponent();
-            btnStartDevice_Click();
-            btnStartPreview_Click();
+            start();
+           
         }
-        public void start()
+        void preview()
+            {
+                Task t = new Task(async () =>
+                {
+                    var myCustomers = await btnStartPreview_Click();
+                });
+                            t.RunSynchronously();
+                        }
+        void  start()
         {
-            btnStartDevice_Click();
-            btnStartPreview_Click();
-
+            //var t=btnStartDevice_Click();
+            Task task = new Task(async () => await btnStartDevice_Click());
+            task.RunSynchronously();
+           // if (result == 1) { }
+            
+            //btnStartPreview_Click();
         }
-        internal async void btnStartDevice_Click()
+
+        
+        async Task<int> btnStartDevice_Click()
         {
             try
             {
@@ -62,19 +76,55 @@ namespace pulsometr
                    // m_mediaCaptureMgr.RecordLimitationExceeded += new Windows.Media.Capture.RecordLimitationExceededEventHandler(RecordLimitationExceeded);
                    // m_mediaCaptureMgr.Failed += new Windows.Media.Capture.MediaCaptureFailedEventHandler(Failed);
                 }
+               
+
                 else
                 {
                   
                     ShowStatusMessage("No VideoDevice/AudioDevice Found");
+                    return 0;
                 }
             }
             catch (Exception exception)
             {
                 ShowExceptionMessage(exception);
+                return -1;
+                
             }
+            m_bPreviewing = false;
+            try
+            {
+                ShowStatusMessage("Starting preview");
+
+
+                //previewCanvas.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                previewElement.Source = m_mediaCaptureMgr;
+                await m_mediaCaptureMgr.StartPreviewAsync();
+                if ((m_mediaCaptureMgr.VideoDeviceController.Brightness != null) && m_mediaCaptureMgr.VideoDeviceController.Brightness.Capabilities.Supported)
+                {
+                    SetupVideoDeviceControl(m_mediaCaptureMgr.VideoDeviceController.Brightness, sldBrightness);
+                }
+                if ((m_mediaCaptureMgr.VideoDeviceController.Contrast != null) && m_mediaCaptureMgr.VideoDeviceController.Contrast.Capabilities.Supported)
+                {
+                    SetupVideoDeviceControl(m_mediaCaptureMgr.VideoDeviceController.Contrast, sldContrast);
+                }
+                m_bPreviewing = true;
+                ShowStatusMessage("Start preview successful");
+
+            }
+            catch (Exception exception)
+            {
+
+                previewElement.Source = null;
+
+                ShowExceptionMessage(exception);
+                return -1;
+
+            }
+            return 1;
         }
 
-        internal async void btnStartPreview_Click()
+        async Task<int> btnStartPreview_Click()
         {
             m_bPreviewing = false;
             try
@@ -103,7 +153,10 @@ namespace pulsometr
                 previewElement.Source = null;
                 
                 ShowExceptionMessage(exception);
+                return -1;
+
             }
+            return 1;
         }
 
         private void SetupVideoDeviceControl(Windows.Media.Devices.MediaDeviceControl videoDeviceControl, Slider slider)
