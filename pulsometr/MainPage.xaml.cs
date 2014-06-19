@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -30,36 +31,37 @@ namespace pulsometr
     {
         private Windows.Media.Capture.MediaCapture m_mediaCaptureMgr;
         private bool m_bPreviewing;
+        public List<double> RedMeanList = new List<double>();
         public MainPage()
         {
             this.InitializeComponent();
             start();
-           
+
         }
         void preview()
+        {
+            Task t = new Task(async () =>
             {
-                Task t = new Task(async () =>
-                {
-                    var myCustomers = await btnStartPreview_Click();
-                });
-                            t.RunSynchronously();
-                        }
-        void  start()
+                var myCustomers = await btnStartPreview_Click();
+            });
+            t.RunSynchronously();
+        }
+        void start()
         {
             //var t=btnStartDevice_Click();
             Task task = new Task(async () => await btnStartDevice_Click());
             task.RunSynchronously();
-           // if (result == 1) { }
-            
+            // if (result == 1) { }
+
             //btnStartPreview_Click();
         }
 
-        
+
         async Task<int> btnStartDevice_Click()
         {
             try
             {
-                
+
                 ShowStatusMessage("Starting device");
                 m_mediaCaptureMgr = new Windows.Media.Capture.MediaCapture();
                 await m_mediaCaptureMgr.InitializeAsync();
@@ -67,20 +69,20 @@ namespace pulsometr
                 if (m_mediaCaptureMgr.MediaCaptureSettings.VideoDeviceId != "" && m_mediaCaptureMgr.MediaCaptureSettings.AudioDeviceId != "")
                 {
 
-                   
-                   
+
+
                     btnTakePhoto.IsEnabled = true;
 
                     ShowStatusMessage("Device initialized successful");
 
-                   // m_mediaCaptureMgr.RecordLimitationExceeded += new Windows.Media.Capture.RecordLimitationExceededEventHandler(RecordLimitationExceeded);
-                   // m_mediaCaptureMgr.Failed += new Windows.Media.Capture.MediaCaptureFailedEventHandler(Failed);
+                    // m_mediaCaptureMgr.RecordLimitationExceeded += new Windows.Media.Capture.RecordLimitationExceededEventHandler(RecordLimitationExceeded);
+                    // m_mediaCaptureMgr.Failed += new Windows.Media.Capture.MediaCaptureFailedEventHandler(Failed);
                 }
-               
+
 
                 else
                 {
-                  
+
                     ShowStatusMessage("No VideoDevice/AudioDevice Found");
                     return 0;
                 }
@@ -89,15 +91,12 @@ namespace pulsometr
             {
                 ShowExceptionMessage(exception);
                 return -1;
-                
+
             }
             m_bPreviewing = false;
             try
             {
                 ShowStatusMessage("Starting preview");
-
-
-                //previewCanvas.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 previewElement.Source = m_mediaCaptureMgr;
                 await m_mediaCaptureMgr.StartPreviewAsync();
                 if ((m_mediaCaptureMgr.VideoDeviceController.Brightness != null) && m_mediaCaptureMgr.VideoDeviceController.Brightness.Capabilities.Supported)
@@ -130,9 +129,9 @@ namespace pulsometr
             try
             {
                 ShowStatusMessage("Starting preview");
-               
 
-               
+
+
                 previewElement.Source = m_mediaCaptureMgr;
                 await m_mediaCaptureMgr.StartPreviewAsync();
                 if ((m_mediaCaptureMgr.VideoDeviceController.Brightness != null) && m_mediaCaptureMgr.VideoDeviceController.Brightness.Capabilities.Supported)
@@ -149,9 +148,9 @@ namespace pulsometr
             }
             catch (Exception exception)
             {
-                
+
                 previewElement.Source = null;
-                
+
                 ShowExceptionMessage(exception);
                 return -1;
 
@@ -208,6 +207,8 @@ namespace pulsometr
             try
             {
                 bool succeeded = m_mediaCaptureMgr.VideoDeviceController.Contrast.TrySetValue(sldContrast.Value);
+                var t = RedMeanList.Count();
+
                 if (!succeeded)
                 {
                     ShowStatusMessage("Set Contrast failed");
@@ -225,32 +226,22 @@ namespace pulsometr
         }
         private void ShowExceptionMessage(Exception ex)
         {
-            rootPage.Text=ex.Source;
+            rootPage.Text = ex.Source;
         }
-    
+
 
 
         internal async void btnTakePhoto_Click(Object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-
-
 
             try
             {
                 ShowStatusMessage("Taking photo");
                 btnTakePhoto.IsEnabled = false;
 
-               
-
-                
-
                 ShowStatusMessage("Create photo file successful");
                 ImageEncodingProperties imageProperties = ImageEncodingProperties.CreateJpeg();
                 List<IRandomAccessStream> lista = new List<IRandomAccessStream>(500);
-
-
-
-
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -258,49 +249,49 @@ namespace pulsometr
                 while (stopwatch.Elapsed.Seconds < 20)
                 {
 
-
                     IRandomAccessStream mediaStream = new InMemoryRandomAccessStream();
-
-
                     await m_mediaCaptureMgr.CapturePhotoToStreamAsync(imageProperties, mediaStream);
 
                     lista.Add(mediaStream);
-
-
-
-
-                    // Get the elapsed time as a TimeSpan value.
+                    await mediaStream.FlushAsync();
                 }
+                Pulse pulse = new Pulse();
+                pulse.ApllyforAllImages(lista, ref RedMeanList);
 
+                //pulse.ApllyforAllImages(lista);
+                ShowStatusMessage("convert");
+                StorageFolder storageFolder = KnownFolders.DocumentsLibrary;
 
-
-
+                StorageFile sampleFile = await storageFolder.GetFileAsync("sample.txt");
                
 
-                //var photoStream = await m_photoStorageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
-
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(lista[20]);
-                PixelDataProvider pixelProvider = await decoder.GetPixelDataAsync();
-                byte[] pixels = pixelProvider.DetachPixelData();
-                BitmapDecoder decoder1 = await BitmapDecoder.CreateAsync(lista[1]);
-                PixelDataProvider pixelProvider1 = await decoder1.GetPixelDataAsync();
-                byte[] pixels1 = pixelProvider1.DetachPixelData();
-                //działa
-                ShowStatusMessage("File open successful");
-                var bmpimg = new BitmapImage();
-                var bmpimg1 = new BitmapImage();
-
-                //bmpimg.SetSource(mediaStream);
-                //bmpimg.SetSource(mediaStream);
-                //                imageElement1.Source = bmpimg;
-                ShowStatusMessage("");
 
             }
+
             catch (Exception exception)
             {
                 ShowExceptionMessage(exception);
                 btnTakePhoto.IsEnabled = true;
             }
         }
+        
+        //static public string SerializeListToXml(List<double> List)
+        //{
+        //    try
+        //    {
+        //        System.Xml.Serialization.XmlSerializer xmlIzer = new System.Xml.Serialization.XmlSerializer(typeof(List<double>));
+        //        var writer = new StringWriter();
+        //        xmlIzer.Serialize(writer, List);
+        //        System.Diagnostics.Debug.WriteLine(writer.ToString());
+        //        return writer.ToString();
+        //    }
+
+        //    catch (Exception exc)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(exc);
+        //        return String.Empty;
+        //    }
+
+        //}
     }
 }

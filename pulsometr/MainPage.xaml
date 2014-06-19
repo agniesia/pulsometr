@@ -22,9 +22,9 @@
     	</Grid.RowDefinitions>
     	<CaptureElement x:Name="previewElement" Margin="0,40,0,0" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
     	
-    	<Slider x:Name="sldBrightness" Grid.Column="3" HorizontalAlignment="Left" Margin="128,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100"/>
-    	<Slider x:Name="sldContrast" Grid.Column="3" HorizontalAlignment="Left" Margin="134,69,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100"/>
-    	<Button x:Name="btnTakePhoto" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="281,85,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+    	<Slider x:Name="sldBrightness" Grid.Column="3" HorizontalAlignment="Left" Margin="128,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" ValueChanged="sldBrightness_ValueChanged"/>
+    	<Slider x:Name="sldContrast" Grid.Column="3" HorizontalAlignment="Left" Margin="134,69,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100" ValueChanged="sldContrast_ValueChanged"/>
+    	<Button x:Name="btnTakePhoto" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="281,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466"/>
     	<TextBox x:Name="rootPage" HorizontalAlignment="Left" Margin="114,58,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
 
     </Grid>
