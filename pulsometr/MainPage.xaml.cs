@@ -246,21 +246,56 @@ namespace pulsometr
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
+                 
+	
 
+                object Lock = new object();
                 while (stopwatch.Elapsed.Seconds < 20)
                 {
-
+                 
+                    
                     IRandomAccessStream mediaStream = new InMemoryRandomAccessStream();
                     await m_mediaCaptureMgr.CapturePhotoToStreamAsync(imageProperties, mediaStream);
-
                     lista.Add(mediaStream);
-                   
+                    
                 }
-                Pulse pulse = new Pulse();
-                pulse.ApllyforAllImages(lista, ref RedMeanList);
+                
+
+                
+                ShowStatusMessage("convert");
+                foreach (IRandomAccessStream streamImage in lista)
+                {
+
+
+                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(streamImage);
+                    PixelDataProvider pixelProvider = await decoder.GetPixelDataAsync();
+                    byte[] pixels = pixelProvider.DetachPixelData();
+                   //Array suma=pixels.Where((x, i) => i % 4 == 2 ).ToArray();
+                   //double[] tablica= new double[suma.Length];
+
+                   //for (int i = 0; i < tablica.Length;i++ )
+                   //{
+                   //    var x=tablica[i] ;//= (double)suma.GetValue(i);
+                   //}
+                   // var t = (double)tablica.Sum() / (double)(decoder.PixelHeight * decoder.PixelWidth);
+                   // RedMeanList.Add(t);
+
+                    Windows.UI.Xaml.Media.Imaging.WriteableBitmap source = new Windows.UI.Xaml.Media.Imaging.WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                    using (Stream stream = source.PixelBuffer.AsStream())
+                    {
+                        await stream.WriteAsync(pixels, 0, pixels.Length);
+                    }
+                    AForge.Imaging.ImageStatistics statistic = new AForge.Imaging.ImageStatistics((System.Drawing.Bitmap)source);
+                    RedMeanList.Add(statistic.Red.Mean);
+                    source.Invalidate();
+                    image.Source = source;
+                    await System.Threading.Tasks.Task.Delay(TimeSpan.FromMilliseconds(500));
+                }
+                //Pulse pulse = new Pulse();
+                //pulse.ApllyforAllImages(lista, ref RedMeanList);
 
                 //pulse.ApllyforAllImages(lista);
-                ShowStatusMessage("convert");
+                ShowStatusMessage("convert po");
                 
 
 
@@ -278,7 +313,7 @@ namespace pulsometr
             string text="";
             foreach (double liczba in RedMeanList)
             {
-                text +=((int)liczba).ToString();
+                text +=(Math.Round((255-liczba)*100)).ToString();
                 text += ",";
             }
             text += "    " + RedMeanList.Count;
@@ -288,7 +323,7 @@ namespace pulsometr
         {
             StorageFolder storageFolder = KnownFolders.MusicLibrary;
 
-            StorageFile sampleFile = await storageFolder.CreateFileAsync("sample5.txt");
+            StorageFile sampleFile = await storageFolder.CreateFileAsync("sample2.txt");
             await Windows.Storage.FileIO.WriteTextAsync(sampleFile,stringList());
         }
         //static public string SerializeListToXml(List<double> List)
