@@ -41,6 +41,9 @@ namespace pulsometr
         }
         void preview()
         {
+
+          
+            
             Task t = new Task(async () =>
             {
                 var myCustomers = await btnStartPreview_Click();
@@ -132,7 +135,7 @@ namespace pulsometr
                 ShowStatusMessage("Starting preview");
 
 
-
+                m_mediaCaptureMgr.SetPreviewMirroring(true);
                 previewElement.Source = m_mediaCaptureMgr;
                 await m_mediaCaptureMgr.StartPreviewAsync();
                 if ((m_mediaCaptureMgr.VideoDeviceController.Brightness != null) && m_mediaCaptureMgr.VideoDeviceController.Brightness.Capabilities.Supported)
@@ -227,7 +230,8 @@ namespace pulsometr
         }
         private void ShowExceptionMessage(Exception ex)
         {
-            rootPage.Text = ex.Source;
+           
+               // rootPage.Text = ex.Source;
         }
 
 
@@ -239,7 +243,7 @@ namespace pulsometr
             {
                 ShowStatusMessage("Taking photo");
                 btnTakePhoto.IsEnabled = false;
-
+               
                 ShowStatusMessage("Create photo file successful");
                 ImageEncodingProperties imageProperties = ImageEncodingProperties.CreateJpeg();
                 List<IRandomAccessStream> lista = new List<IRandomAccessStream>(500);
@@ -287,21 +291,24 @@ namespace pulsometr
                     }
                     AForge.Imaging.ImageStatistics statistic = new AForge.Imaging.ImageStatistics((System.Drawing.Bitmap)source);
                     RedMeanList.Add(statistic.Red.Mean);
-                    source.Invalidate();
-                    image.Source = source;
-                    await System.Threading.Tasks.Task.Delay(TimeSpan.FromMilliseconds(500));
+                    //source.Invalidate();
+                    //image.Source = source;
+                    //await System.Threading.Tasks.Task.Delay(TimeSpan.FromMilliseconds(500));
                 }
+                DataAnalisys dta = new DataAnalisys(RedMeanList);
+                dta.DataManage();
+               
                 //Pulse pulse = new Pulse();
                 //pulse.ApllyforAllImages(lista, ref RedMeanList);
 
                 //pulse.ApllyforAllImages(lista);
-                ShowStatusMessage("convert po");
+                ShowStatusMessage( dta.PulseEND.ToString());
                 
 
 
             }
 
-            catch (Exception exception)
+            catch (FileNotFoundException exception)
             {
                 ShowExceptionMessage(exception);
                 btnTakePhoto.IsEnabled = true;
@@ -323,7 +330,7 @@ namespace pulsometr
         {
             StorageFolder storageFolder = KnownFolders.MusicLibrary;
 
-            StorageFile sampleFile = await storageFolder.CreateFileAsync("sample2.txt");
+            StorageFile sampleFile = await storageFolder.CreateFileAsync("sampleX.txt");
             await Windows.Storage.FileIO.WriteTextAsync(sampleFile,stringList());
         }
         //static public string SerializeListToXml(List<double> List)

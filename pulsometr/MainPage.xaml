@@ -7,7 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid x:Name="maingrid" Background="#FFBA2B2B">
+    <Grid x:Name="maingrid">
+    	<Grid.Background>
+    		<ImageBrush Stretch="Fill" ImageSource="Assets/tlo.jpg"/>
+    	</Grid.Background>
     	<Grid.ColumnDefinitions>
     		<ColumnDefinition/>
     		<ColumnDefinition/>
@@ -20,14 +23,52 @@
     		<RowDefinition/>
     		<RowDefinition/>
     	</Grid.RowDefinitions>
-    	<CaptureElement x:Name="previewElement" Margin="52,32,290,8" Grid.RowSpan="3" Grid.ColumnSpan="3"/>
-    	
-    	<Slider x:Name="sldBrightness" Grid.Column="3" HorizontalAlignment="Left" Margin="208,66,0,0" Grid.Row="3" VerticalAlignment="Top" Width="100" ValueChanged="sldBrightness_ValueChanged"/>
-    	<Slider x:Name="sldContrast" Grid.Column="3" HorizontalAlignment="Left" Margin="98,73,0,0" Grid.Row="3" VerticalAlignment="Top" Width="100" ValueChanged="sldContrast_ValueChanged"/>
-    	<Button x:Name="btnTakePhoto" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="281,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466"/>
-    	<TextBox x:Name="rootPage" HorizontalAlignment="Left" Margin="114,58,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
+    	<CaptureElement x:Name="previewElement" Margin="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
+    	<Button x:Name="btnTakePhoto" Content="START" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="3" VerticalAlignment="Stretch" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466" FontFamily="Kristen ITC" FontSize="33.333"/>
+    	<TextBox x:Name="rootPage" HorizontalAlignment="Left" Margin="114,58,0,0" Grid.Row="1" TextWrapping="Wrap" Text="d" VerticalAlignment="Top"/>
     	<Button x:Name="save" Content="Button" Grid.Column="2" HorizontalAlignment="Left" Margin="289,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="save_Click"/>
-    	<Image x:Name="image" Grid.ColumnSpan="2" Grid.Column="2" HorizontalAlignment="Left" Height="490" Margin="111,64,0,0" VerticalAlignment="Top" Width="510" Grid.RowSpan="3" Source="Assets/Logo.png"/>
+    	<FlipView x:Name="Introduction" Grid.Column="1" Margin="0" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed" Grid.RowSpan="2">
+    		<FlipViewItem x:Name="Coto" Content="&#x9;&#xD;&#xA;&#x9;&#xD;&#xA;&#xD;&#xA;   This App measures your pulse.&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;&#x9;" Background="#7F6E4996" FontSize="40" FontFamily="Kristen ITC" FontWeight="Bold" FontStyle="Italic"/>
+    		<FlipViewItem x:Name="Warning" Content="&#x9;WARNING!&#xD;&#xA;&#xD;&#xA;This is not medical equipment&#xD;&#xA;The measurement can be wrong.&#xD;&#xA;The average uncertainty of &#xD;&#xA;measurement is &#xD;&#xA;10 heart rate per minute" Background="#7FB376F5" Foreground="White" FontSize="40" FontFamily="Kristen ITC"/>
+    		<FlipViewItem x:Name="howuse" Content="&#xD;&#xA;You need :&#xD;&#xA;Webcam and white light from torch&#xD;&#xA; or flash in your camera." FontFamily="Kristen ITC" FontSize="40" Foreground="White" Background="#7FDABCFC"/>
+    		<FlipViewItem x:Name="need" Content="">
+    			<FlipViewItem.Background>
+    				<ImageBrush ImageSource="Assets/need.png"/>
+    			</FlipViewItem.Background>
+    			<FlipViewItem.Foreground>
+    				<ImageBrush Stretch="Fill" ImageSource="Assets/need.png"/>
+    			</FlipViewItem.Foreground>
+    		</FlipViewItem>
+    		<FlipViewItem x:Name="todo" Content="Put your &#xD;&#xA;thumb between light and webcam " FontSize="40" FontFamily="Kristen ITC" Foreground="White" Background="#7FDABCFC"/>
+    		<FlipViewItem x:Name="how_do_measure" Content="" Foreground="White">
+    			<FlipViewItem.Background>
+    				<ImageBrush Stretch="Fill" ImageSource="Assets/dziala.jpg"/>
+    			</FlipViewItem.Background>
+    		</FlipViewItem>
+    		<FlipViewItem x:Name="press_start_" Content="Press Start Button" FontSize="40" FontFamily="Kristen ITC" Background="#7FDABCFC" Foreground="White"/>
+    	</FlipView>
+    	<Viewbox x:Name="viecontrast" Grid.Row="2" Grid.Column="3" Margin="20,0">
+    		<Grid Margin="0" Height="192" Width="341">
+    			<Grid.RowDefinitions>
+    				<RowDefinition Height="0.5*"/>
+    				<RowDefinition Height="0.5*"/>
+    			</Grid.RowDefinitions>
+    			<Slider x:Name="sldContrast" Margin="0" ValueChanged="sldContrast_ValueChanged" Grid.Row="1" Value="50"/>
+
+    			<TextBlock x:Name="textcont" Margin="0,20,0,0" TextWrapping="Wrap" Text="Contrast" FontSize="33.333" FontFamily="Kristen ITC"/>
+    		</Grid>
+    	</Viewbox>
+    	<Viewbox x:Name="viebright" Grid.Column="3" Margin="20,0" Grid.Row="1">
+    		<Grid Margin="0" Height="192" Width="341">
+    			<Grid.RowDefinitions>
+    				<RowDefinition Height="0.5*"/>
+    				<RowDefinition Height="0.5*"/>
+    			</Grid.RowDefinitions>
+    			<TextBlock x:Name="textBrg" Margin="0,20,0,0" TextWrapping="Wrap" Text="Brightness" FontSize="33.333" FontFamily="Kristen ITC"/>
+    			<Slider x:Name="sldBrightness" Margin="0" Grid.Row="1" ValueChanged="sldBrightness_ValueChanged" Value="50"/>
+    		</Grid>
+    	</Viewbox>
+    	<CommandBar x:Name="instriction" Background="Black" Foreground="Black"/>
 
     </Grid>
 </Page>
