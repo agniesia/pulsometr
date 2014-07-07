@@ -37,6 +37,7 @@ namespace pulsometr
         {
             this.InitializeComponent();
             start();
+            
 
         }
         void preview()

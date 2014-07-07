@@ -1,74 +1,93 @@
 ﻿<Page
-    x:Class="pulsometr.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:pulsometr"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:Media="using:Microsoft.Xaml.Interactions.Media"
+    x:Class="pulsometr.MainPage"
     mc:Ignorable="d">
+	<Page.TopAppBar>
+		<AppBar x:Name="comand" Margin="0,300,0,-500" Background="#FF271F31">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0.5*"/>
+					<RowDefinition Height="0.5*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<AppBarButton x:Name="Acept" Label="YES" VerticalAlignment="Stretch" ToolTipService.ToolTip="Yes" HorizontalAlignment="Stretch" Icon="Accept" Grid.Row="1" Grid.Column="1"/>
+				<AppBarButton x:Name="refuse" Label="NO" VerticalAlignment="Stretch" ToolTipService.ToolTip="Yes" HorizontalAlignment="Stretch" Icon="Cancel" Grid.Row="1" Grid.Column="2"/>
+				<TextBlock x:Name="info" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="53.333" Grid.ColumnSpan="2" Text="Would you like  see intro?" Grid.Column="1" UseLayoutRounding="False"/>
+			</Grid>
+		</AppBar>
+	</Page.TopAppBar>
 
-    <Grid x:Name="maingrid">
-    	<Grid.Background>
-    		<ImageBrush Stretch="Fill" ImageSource="Assets/tlo.jpg"/>
-    	</Grid.Background>
-    	<Grid.ColumnDefinitions>
-    		<ColumnDefinition/>
-    		<ColumnDefinition/>
-    		<ColumnDefinition/>
-    		<ColumnDefinition/>
-    	</Grid.ColumnDefinitions>
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="192"/>
-    		<RowDefinition/>
-    		<RowDefinition/>
-    		<RowDefinition/>
-    	</Grid.RowDefinitions>
-    	<CaptureElement x:Name="previewElement" Margin="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
-    	<Button x:Name="btnTakePhoto" Content="START" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="3" VerticalAlignment="Stretch" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466" FontFamily="Kristen ITC" FontSize="33.333"/>
-    	<TextBox x:Name="rootPage" HorizontalAlignment="Left" Margin="114,58,0,0" Grid.Row="1" TextWrapping="Wrap" Text="d" VerticalAlignment="Top"/>
-    	<Button x:Name="save" Content="Button" Grid.Column="2" HorizontalAlignment="Left" Margin="289,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="save_Click"/>
-    	<FlipView x:Name="Introduction" Grid.Column="1" Margin="0" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed" Grid.RowSpan="2">
-    		<FlipViewItem x:Name="Coto" Content="&#x9;&#xD;&#xA;&#x9;&#xD;&#xA;&#xD;&#xA;   This App measures your pulse.&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;&#x9;" Background="#7F6E4996" FontSize="40" FontFamily="Kristen ITC" FontWeight="Bold" FontStyle="Italic"/>
-    		<FlipViewItem x:Name="Warning" Content="&#x9;WARNING!&#xD;&#xA;&#xD;&#xA;This is not medical equipment&#xD;&#xA;The measurement can be wrong.&#xD;&#xA;The average uncertainty of &#xD;&#xA;measurement is &#xD;&#xA;10 heart rate per minute" Background="#7FB376F5" Foreground="White" FontSize="40" FontFamily="Kristen ITC"/>
-    		<FlipViewItem x:Name="howuse" Content="&#xD;&#xA;You need :&#xD;&#xA;Webcam and white light from torch&#xD;&#xA; or flash in your camera." FontFamily="Kristen ITC" FontSize="40" Foreground="White" Background="#7FDABCFC"/>
-    		<FlipViewItem x:Name="need" Content="">
-    			<FlipViewItem.Background>
-    				<ImageBrush ImageSource="Assets/need.png"/>
-    			</FlipViewItem.Background>
-    			<FlipViewItem.Foreground>
-    				<ImageBrush Stretch="Fill" ImageSource="Assets/need.png"/>
-    			</FlipViewItem.Foreground>
-    		</FlipViewItem>
-    		<FlipViewItem x:Name="todo" Content="Put your &#xD;&#xA;thumb between light and webcam " FontSize="40" FontFamily="Kristen ITC" Foreground="White" Background="#7FDABCFC"/>
-    		<FlipViewItem x:Name="how_do_measure" Content="" Foreground="White">
-    			<FlipViewItem.Background>
-    				<ImageBrush Stretch="Fill" ImageSource="Assets/dziala.jpg"/>
-    			</FlipViewItem.Background>
-    		</FlipViewItem>
-    		<FlipViewItem x:Name="press_start_" Content="Press Start Button" FontSize="40" FontFamily="Kristen ITC" Background="#7FDABCFC" Foreground="White"/>
-    	</FlipView>
-    	<Viewbox x:Name="viecontrast" Grid.Row="2" Grid.Column="3" Margin="20,0">
-    		<Grid Margin="0" Height="192" Width="341">
-    			<Grid.RowDefinitions>
-    				<RowDefinition Height="0.5*"/>
-    				<RowDefinition Height="0.5*"/>
-    			</Grid.RowDefinitions>
-    			<Slider x:Name="sldContrast" Margin="0" ValueChanged="sldContrast_ValueChanged" Grid.Row="1" Value="50"/>
+	<Grid x:Name="maingrid">
+		<Grid.Background>
+			<ImageBrush Stretch="Fill" ImageSource="Assets/tlo.jpg"/>
+		</Grid.Background>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="192"/>
+			<RowDefinition/>
+			<RowDefinition/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<CaptureElement x:Name="previewElement" Margin="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
+		<Button x:Name="btnTakePhoto" Content="START" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="3" VerticalAlignment="Stretch" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466" FontFamily="Kristen ITC" FontSize="33.333"/>
+		<TextBox x:Name="rootPage" HorizontalAlignment="Left" Margin="114,58,0,0" Grid.Row="1" TextWrapping="Wrap" Text="d" VerticalAlignment="Top"/>
+		<Button x:Name="save" Content="Button" Grid.Column="2" HorizontalAlignment="Left" Margin="289,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="save_Click"/>
+		<FlipView x:Name="Introduction" Margin="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1">
+			<FlipViewItem x:Name="Coto" Content="&#x9;&#xA;&#x9;&#xA;&#xA;   This App measures your pulse.&#xA;&#x9;&#xA;&#x9;&#x9;" Background="#7F6E4996" FontSize="40" FontFamily="Kristen ITC" FontWeight="Bold" FontStyle="Italic"/>
+			<FlipViewItem x:Name="Warning" Content="&#x9;WARNING!&#xA;&#xA;This is not medical equipment&#xA;The measurement can be wrong.&#xA;The average uncertainty of &#xA;measurement is &#xA;10 heart rate per minute" Background="#7FB376F5" Foreground="White" FontSize="40" FontFamily="Kristen ITC"/>
+			<FlipViewItem x:Name="howuse" Content="&#xA;You need :&#xA;Webcam and white light from&#xD;&#xA;toarch or flash in your camera." FontFamily="Kristen ITC" FontSize="40" Foreground="White" Background="#7FDABCFC"/>
+			<FlipViewItem x:Name="need" Content="">
+				<FlipViewItem.Background>
+					<ImageBrush ImageSource="Assets/need.png"/>
+				</FlipViewItem.Background>
+				<FlipViewItem.Foreground>
+					<ImageBrush Stretch="Fill" ImageSource="Assets/need.png"/>
+				</FlipViewItem.Foreground>
+			</FlipViewItem>
+			<FlipViewItem x:Name="todo" Content="Put your &#xA;thumb between light and webcam " FontSize="40" FontFamily="Kristen ITC" Foreground="White" Background="#7FDABCFC"/>
+			<FlipViewItem x:Name="how_do_measure" Content="" Foreground="White">
+				<FlipViewItem.Background>
+					<ImageBrush Stretch="Fill" ImageSource="Assets/dziala.jpg"/>
+				</FlipViewItem.Background>
+			</FlipViewItem>
+			<FlipViewItem x:Name="press_start_" Content="Press Start Button" FontSize="40" FontFamily="Kristen ITC" Background="#7FDABCFC" Foreground="White"/>
+		</FlipView>
+		<Viewbox x:Name="viecontrast" Grid.Row="2" Grid.Column="3" Margin="20,0">
+			<Grid Margin="0" Height="192" Width="341">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0.5*"/>
+					<RowDefinition Height="0.5*"/>
+				</Grid.RowDefinitions>
+				<Slider x:Name="sldContrast" Margin="0" ValueChanged="sldContrast_ValueChanged" Grid.Row="1" Value="50"/>
 
-    			<TextBlock x:Name="textcont" Margin="0,20,0,0" TextWrapping="Wrap" Text="Contrast" FontSize="33.333" FontFamily="Kristen ITC"/>
-    		</Grid>
-    	</Viewbox>
-    	<Viewbox x:Name="viebright" Grid.Column="3" Margin="20,0" Grid.Row="1">
-    		<Grid Margin="0" Height="192" Width="341">
-    			<Grid.RowDefinitions>
-    				<RowDefinition Height="0.5*"/>
-    				<RowDefinition Height="0.5*"/>
-    			</Grid.RowDefinitions>
-    			<TextBlock x:Name="textBrg" Margin="0,20,0,0" TextWrapping="Wrap" Text="Brightness" FontSize="33.333" FontFamily="Kristen ITC"/>
-    			<Slider x:Name="sldBrightness" Margin="0" Grid.Row="1" ValueChanged="sldBrightness_ValueChanged" Value="50"/>
-    		</Grid>
-    	</Viewbox>
-    	<CommandBar x:Name="instriction" Background="Black" Foreground="Black"/>
+				<TextBlock x:Name="textcont" Margin="0,20,0,0" TextWrapping="Wrap" Text="Contrast" FontSize="33.333" FontFamily="Kristen ITC"/>
+			</Grid>
+		</Viewbox>
+		<Viewbox x:Name="viebright" Grid.Column="3" Margin="20,0" Grid.Row="1">
+			<Grid Margin="0" Height="192" Width="341">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0.5*"/>
+					<RowDefinition Height="0.5*"/>
+				</Grid.RowDefinitions>
+				<TextBlock x:Name="textBrg" Margin="0,20,0,0" TextWrapping="Wrap" Text="Brightness" FontSize="33.333" FontFamily="Kristen ITC"/>
+				<Slider x:Name="sldBrightness" Margin="0" Grid.Row="1" ValueChanged="sldBrightness_ValueChanged" Value="50"/>
+			</Grid>
+		</Viewbox>
 
-    </Grid>
+	</Grid>
 </Page>
