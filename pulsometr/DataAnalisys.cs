@@ -19,6 +19,7 @@ namespace pulsometr
             PulseInformation = "Your pulse is measured now...";
             smoothingDate(11, 2.7);
             fourier();
+            PulseInformation = "Your pulse is ";
 
         }
         private void smoothingDate(int SizeMask,double sigma){
@@ -53,7 +54,7 @@ namespace pulsometr
             {
                 for (int i = 0; i < halfSize; i++)
                 {
-                    listMeanRed.Remove(i);
+                    listMeanRed.Remove(0);
                     listMeanRed.RemoveAt(listMeanRed.Count() - 1);
                 }
             }
@@ -96,9 +97,10 @@ namespace pulsometr
 
 
                 var ModulList = modul(complexReal);
+                List<double> temp= new List<double>();
                 if (ModulList.Count / 2 > 5)
-                    for (int i = 0; i < (ModulList.Count / 2) + 5; i++)
-                        ModulList.Remove(i);
+                    for (int i = 4; i < (ModulList.Count / 2); i++)
+                        temp.Add(ModulList.ElementAt(i));
                 else
                 {
                     PulseInformation = "Measurement is failed, try again";
@@ -108,10 +110,12 @@ namespace pulsometr
 
 
 
-                var theBigestFrq = ModulList.IndexOf(ModulList.Max());
-                var maximumFreq = complexReal.Length / 20.0;
+                var theBigestFrq = ModulList.IndexOf(temp.Max());
+                var maximumFreq = (complexReal.Length+11) / 20.0;
                 maximumFreq = maximumFreq / ModulList.Count;
-                PulseEND = (int)((theBigestFrq + 1) * maximumFreq);
+                PulseEND = (int)(((theBigestFrq +5 ) * maximumFreq)*60);
+                
+                    
             }
             catch (Exception ex)
             {

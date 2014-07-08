@@ -313,6 +313,7 @@ namespace pulsometr
                     //await System.Threading.Tasks.Task.Delay(TimeSpan.FromMilliseconds(500));
                 }
                 DataAnalisys dta = new DataAnalisys(RedMeanList);
+                ShowStatusMessage("Your pulse is measured now");
                 dta.DataManage();
                 ShowStatusMessage(dta.PulseInformation);
                
@@ -321,7 +322,7 @@ namespace pulsometr
                 //pulse.ApllyforAllImages(lista, ref RedMeanList);
 
                 //pulse.ApllyforAllImages(lista);
-                //ShowStatusMessage( dta.PulseEND.ToString());
+                ShowStatusMessage(dta.PulseInformation+dta.PulseEND.ToString()+" bmp");
                 btnTakePhoto.IsEnabled = true;
 
 

@@ -44,9 +44,7 @@
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<CaptureElement x:Name="previewElement" Margin="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
-		<Button x:Name="btnTakePhoto" Content="START" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="3" VerticalAlignment="Stretch" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466" FontFamily="Kristen ITC" FontSize="33.333"/>
-		<TextBox x:Name="rootPage" Margin="20" Grid.Row="1" TextWrapping="Wrap" Background="Transparent" BorderBrush="Transparent" FontSize="33.333" FontFamily="Kristen ITC" Foreground="White"/>
-		<Button x:Name="save" Content="Button" Grid.Column="2" HorizontalAlignment="Left" Margin="289,85,0,0" Grid.Row="3" VerticalAlignment="Top" Click="save_Click"/>
+		<Button x:Name="btnTakePhoto" Content="START" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="3" VerticalAlignment="Stretch" Click="btnTakePhoto_Click" RenderTransformOrigin="2.204,-0.466" FontFamily="Kristen ITC" FontSize="33.333" Grid.ColumnSpan="2"/>
 		<FlipView x:Name="Introduction" Margin="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1">
 			<FlipViewItem x:Name="Coto" Content="&#x9;&#xA;&#x9;&#xA;&#xA;   This App measures your pulse.&#xA;&#x9;&#xA;&#x9;&#x9;" Background="#7F6E4996" FontSize="40" FontFamily="Kristen ITC" FontWeight="Bold" FontStyle="Italic"/>
 			<FlipViewItem x:Name="Warning" Content="&#x9;WARNING!&#xA;&#xA;This is not medical equipment&#xA;The measurement can be wrong.&#xA;The average uncertainty of &#xA;measurement is &#xA;10 heart rate per minute" Background="#7FB376F5" Foreground="White" FontSize="40" FontFamily="Kristen ITC"/>
@@ -88,6 +86,7 @@
 				<Slider x:Name="sldBrightness" Margin="0" Grid.Row="1" ValueChanged="sldBrightness_ValueChanged" Value="50"/>
 			</Grid>
 		</Viewbox>
+		<TextBlock x:Name="rootPage" Margin="20" Grid.Row="1" TextWrapping="Wrap" FontSize="40" FontFamily="Kristen ITC" Grid.RowSpan="2"/>
 
 	</Grid>
 </Page>
