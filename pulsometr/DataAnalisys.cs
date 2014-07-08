@@ -10,11 +10,13 @@ namespace pulsometr
     {
         public List<double> listMeanRed;
         public int PulseEND = 0;
+        public String PulseInformation = "";
         public DataAnalisys(List<double> listMeanRed)
         {
             this.listMeanRed = listMeanRed;
         }
         public void  DataManage(){
+            PulseInformation = "Your pulse is measured now...";
             smoothingDate(11, 2.7);
             fourier();
 
@@ -47,6 +49,18 @@ namespace pulsometr
 
                powerOfSmoothing--;
             }
+            if(listMeanRed.Count>SizeMask)
+            {
+                for (int i = 0; i < halfSize; i++)
+                {
+                    listMeanRed.Remove(i);
+                    listMeanRed.RemoveAt(listMeanRed.Count() - 1);
+                }
+            }
+            else
+            {
+                PulseInformation = "Measurement is failed, try again!";
+            }
 
             //tempecg = dateECG.ToList();
             //for (int i = 0; i < SizeMask; i++)
@@ -61,40 +75,48 @@ namespace pulsometr
         private void fourier()
         {
 
-
-           AForge.Math.Complex[] complex = new AForge.Math.Complex[listMeanRed.Count];
-            for (int i = 0; i < listMeanRed.Count; i++)
+            try
             {
-                complex[i]=new AForge.Math.Complex(HannaWindow(listMeanRed.ElementAt(i),listMeanRed.Count), 0);
+                AForge.Math.Complex[] complex = new AForge.Math.Complex[listMeanRed.Count];
+                for (int i = 0; i < listMeanRed.Count; i++)
+                {
+                    complex[i] = new AForge.Math.Complex(HannaWindow(listMeanRed.ElementAt(i), listMeanRed.Count), 0);
+                }
+                var potega = Math.Log(complex.Length, 2);
+                var dlugosc_transforaty = Math.Pow(2, Math.Floor(potega));
+                int brzeg = (int)(complex.Length - dlugosc_transforaty);
+                AForge.Math.Complex[] complexReal = new AForge.Math.Complex[complex.Length - brzeg];
+                for (int i = 0; i < complex.Length - brzeg; i++)
+                {
+                    complexReal[i] = complex[i + (int)brzeg / 2];
+                }
+                var a = Math.Log(complexReal.Length, 2);
+
+                AForge.Math.FourierTransform.FFT(complexReal, AForge.Math.FourierTransform.Direction.Forward);
+
+
+                var ModulList = modul(complexReal);
+                if (ModulList.Count / 2 > 5)
+                    for (int i = 0; i < (ModulList.Count / 2) + 5; i++)
+                        ModulList.Remove(i);
+                else
+                {
+                    PulseInformation = "Measurement is failed, try again";
+                }
+
+
+
+
+
+                var theBigestFrq = ModulList.IndexOf(ModulList.Max());
+                var maximumFreq = complexReal.Length / 20.0;
+                maximumFreq = maximumFreq / ModulList.Count;
+                PulseEND = (int)((theBigestFrq + 1) * maximumFreq);
             }
-            var potega=Math.Log(complex.Length, 2);
-            var dlugosc_transforaty=Math.Pow(2, Math.Floor(potega));
-            int brzeg =(int) (complex.Length - dlugosc_transforaty);
-            AForge.Math.Complex[] complexReal = new AForge.Math.Complex[complex.Length-brzeg];
-            for (int i =0; i <complex.Length-brzeg; i++)
+            catch (Exception ex)
             {
-                complexReal[i] = complex[i+(int)brzeg/2];
+                PulseInformation = "Measurement is failed, try again";
             }
-            var a=Math.Log(complexReal.Length, 2);
-
-            AForge.Math.FourierTransform.FFT(complexReal, AForge.Math.FourierTransform.Direction.Forward);
-            var ModulList = modul(complexReal);
-           ModulList.RemoveAt(0);
-           ModulList.RemoveAt(0);
-           ModulList.RemoveAt(0);
-           ModulList.RemoveAt(0);
-           ModulList.RemoveAt(ModulList.Count-1);
-           ModulList.RemoveAt(ModulList.Count - 1);
-           ModulList.RemoveAt(ModulList.Count - 1);
-           ModulList.RemoveAt(ModulList.Count - 1);
-
-
-
-           var theBigestFrq = ModulList.IndexOf(ModulList.Max());
-            var maximumFreq=complexReal.Length/20.0;
-            maximumFreq = maximumFreq / ModulList.Count;
-            PulseEND =(int)( (theBigestFrq+1) * maximumFreq);
-           
             
         }
         private List<double> modul(AForge.Math.Complex[] c)

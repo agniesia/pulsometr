@@ -37,8 +37,23 @@ namespace pulsometr
         {
             this.InitializeComponent();
             start();
+            comand.IsOpen = true;
             
 
+        }
+        void showAppBar()
+        {
+            comand.IsOpen = false;
+        }
+        void showInstruction()
+        {
+            Introduction.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            showAppBar();
+        }
+        void hideInstructon()
+        {
+            Introduction.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            showAppBar();
         }
         void preview()
         {
@@ -66,8 +81,8 @@ namespace pulsometr
         {
             try
             {
-
-                ShowStatusMessage("Starting device");
+                
+                //ShowStatusMessage("Starting device");
                 m_mediaCaptureMgr = new Windows.Media.Capture.MediaCapture();
                 await m_mediaCaptureMgr.InitializeAsync();
 
@@ -78,7 +93,7 @@ namespace pulsometr
 
                     btnTakePhoto.IsEnabled = true;
 
-                    ShowStatusMessage("Device initialized successful");
+                    //ShowStatusMessage("Device initialized successful");
 
                     // m_mediaCaptureMgr.RecordLimitationExceeded += new Windows.Media.Capture.RecordLimitationExceededEventHandler(RecordLimitationExceeded);
                     // m_mediaCaptureMgr.Failed += new Windows.Media.Capture.MediaCaptureFailedEventHandler(Failed);
@@ -101,7 +116,7 @@ namespace pulsometr
             m_bPreviewing = false;
             try
             {
-                ShowStatusMessage("Starting preview");
+                //ShowStatusMessage("Starting preview");
                 previewElement.Source = m_mediaCaptureMgr;
                 await m_mediaCaptureMgr.StartPreviewAsync();
                 if ((m_mediaCaptureMgr.VideoDeviceController.Brightness != null) && m_mediaCaptureMgr.VideoDeviceController.Brightness.Capabilities.Supported)
@@ -113,7 +128,7 @@ namespace pulsometr
                     SetupVideoDeviceControl(m_mediaCaptureMgr.VideoDeviceController.Contrast, sldContrast);
                 }
                 m_bPreviewing = true;
-                ShowStatusMessage("Start preview successful");
+                //ShowStatusMessage("Start preview successful");
 
             }
             catch (Exception exception)
@@ -133,7 +148,7 @@ namespace pulsometr
             m_bPreviewing = false;
             try
             {
-                ShowStatusMessage("Starting preview");
+                //ShowStatusMessage("Starting preview");
 
 
                 m_mediaCaptureMgr.SetPreviewMirroring(true);
@@ -148,7 +163,7 @@ namespace pulsometr
                     SetupVideoDeviceControl(m_mediaCaptureMgr.VideoDeviceController.Contrast, sldContrast);
                 }
                 m_bPreviewing = true;
-                ShowStatusMessage("Start preview successful");
+                //ShowStatusMessage("Start preview successful");
 
             }
             catch (Exception exception)
@@ -242,13 +257,14 @@ namespace pulsometr
 
             try
             {
+                hideInstructon();
                 ShowStatusMessage("Taking photo");
                 btnTakePhoto.IsEnabled = false;
-               
-                ShowStatusMessage("Create photo file successful");
+
+                ShowStatusMessage("Don't move your thumb, measurment is going...");
                 ImageEncodingProperties imageProperties = ImageEncodingProperties.CreateJpeg();
                 List<IRandomAccessStream> lista = new List<IRandomAccessStream>(500);
-
+                
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
                  
@@ -267,7 +283,7 @@ namespace pulsometr
                 
 
                 
-                ShowStatusMessage("convert");
+                ShowStatusMessage("You can take off your thumb now");
                 foreach (IRandomAccessStream streamImage in lista)
                 {
 
@@ -298,13 +314,15 @@ namespace pulsometr
                 }
                 DataAnalisys dta = new DataAnalisys(RedMeanList);
                 dta.DataManage();
+                ShowStatusMessage(dta.PulseInformation);
+               
                
                 //Pulse pulse = new Pulse();
                 //pulse.ApllyforAllImages(lista, ref RedMeanList);
 
                 //pulse.ApllyforAllImages(lista);
-                ShowStatusMessage( dta.PulseEND.ToString());
-                
+                //ShowStatusMessage( dta.PulseEND.ToString());
+                btnTakePhoto.IsEnabled = true;
 
 
             }
@@ -313,6 +331,7 @@ namespace pulsometr
             {
                 ShowExceptionMessage(exception);
                 btnTakePhoto.IsEnabled = true;
+                
             }
         }
 
@@ -333,6 +352,16 @@ namespace pulsometr
 
             StorageFile sampleFile = await storageFolder.CreateFileAsync("sampleX.txt");
             await Windows.Storage.FileIO.WriteTextAsync(sampleFile,stringList());
+        }
+
+        private void Acept_Click(object sender, RoutedEventArgs e)
+        {
+            showInstruction();
+        }
+
+        private void refuse_Click(object sender, RoutedEventArgs e)
+        {
+            hideInstructon();
         }
         //static public string SerializeListToXml(List<double> List)
         //{
